@@ -1,6 +1,7 @@
 using ChargeNotification.Data;
 using ChargeNotification.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
 
 namespace ChargeNotification.Controllers;
@@ -34,19 +35,16 @@ public class InvoiceController : Controller
     /// </param>
     [HttpGet]
     [Route("{id:int}")]
-    public IActionResult Invoice(int id, DateTime date = default, bool pdf = true)
+    public async Task<IActionResult> InvoiceAsync(int id, DateTime date = default, bool pdf = true)
     {
         DateOnly chargeDate = date != default ?
                 DateOnly.FromDateTime(date) :
                 DateOnly.FromDateTime(DateTime.Now);
-        // Customer? customer = this._context.Customers.FirstOrDefault(i => i.Id == id);
 
-        Customer? customer = this._context.Customers.Find(id);
-
-        List<GameCharge>? charges = this._context.GameCharges
-                        .Where(i => i.CustomerId == id &&
-                               i.ChargeDate == chargeDate)
-                        .ToList();
+        Customer? customer = await this._context.Customers.FindAsync(id);
+        List<GameCharge>? charges = await this._context.GameCharges
+                        .Where(i => i.CustomerId == id && i.ChargeDate == chargeDate)
+                        .ToListAsync();
 
         if (customer == null || charges == null)
         {
@@ -66,6 +64,5 @@ public class InvoiceController : Controller
             };
         }
         return View(invoice);
-
     }
 }
