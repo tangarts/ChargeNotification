@@ -3,21 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
-bool INMEMORYDB = false;
+
 // Add services to the container.
+builder.Services.AddEndpointsApiExplorer();
+// builder.Services.AddSwaggerGen();
 builder.Services.AddControllersWithViews();
-
-if (INMEMORYDB)
-{
-    builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseInMemoryDatabase("dbo"));
-}
-else
-{
-    builder.Services.AddDbContext<AppDbContext>(opt =>
+builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-}
-
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();

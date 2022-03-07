@@ -1,6 +1,6 @@
 
 namespace ChargeNotification.Models;
-public class GameCharge
+public partial class GameCharge
 {
     public int Id { get; set; }
     public int CustomerId { get; set; }

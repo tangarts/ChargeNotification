@@ -1,7 +1,11 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace ChargeNotification.Models;
 
-public class Customer
+public partial class Customer
 {
-    public int CustomerId { get; set; }
-    public string? CustomerName { get; set; }
+    [Required]
+    public int Id { get; set; }
+    [Required]
+    public string Name { get; set; } = null!;
 }
