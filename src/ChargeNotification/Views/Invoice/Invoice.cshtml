@@ -2,21 +2,30 @@
 
 <p>Customer Number: @Model.CustomerNumber</p>
 <p>Customer Name: @Model.CustomerName</p>
+<br>
 
-<h3>CHARGES</h3>
+<p><b>CHARGES</b></p>
 
 <table class="table">
-    <th scope="col"><b>Date</b></th>
-    <th scope="col"><b>Game</b></th>
-    <th scope="col"><b>Cost (pence)</b></th>
-    @foreach (var charge in Model.Charges)
-    {
+    <thead>
         <tr>
-            <td>@charge.ChargeDate</td>
-            <td>@charge.Description</td>
-            <td>@charge.TotalCost</td>
+            <th scope="col"><b>Date</b></th>
+            <th scope="col"><b>Game</b></th>
+            <th scope="col"><b>Cost (pence)</b></th>
         </tr>
-    }
+    </thead>
+
+    <tbody>
+        @foreach (var charge in Model.Charges)
+        {
+            <tr>
+                <td>@charge.ChargeDate</td>
+                <td>@charge.Description</td>
+                <td>@charge.TotalCost</td>
+            </tr>
+        }
+    </tbody>
+
 </table>
 
 <p><b>TOTAL (Pence): @Model.TotalCost</b></p>
