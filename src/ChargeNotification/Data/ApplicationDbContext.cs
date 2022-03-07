@@ -2,10 +2,10 @@ using ChargeNotification.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChargeNotification.Data;
-public class AppDbContext : DbContext
+public partial class AppDbContext : DbContext
 {
-    public DbSet<GameCharge> GameCharges => this.Set<GameCharge>();
-    public DbSet<Customer> Customers => this.Set<Customer>();
+    public virtual DbSet<GameCharge> GameCharges => this.Set<GameCharge>();
+    public virtual DbSet<Customer> Customers => this.Set<Customer>();
 
     public AppDbContext()
     {
@@ -25,36 +25,34 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
-        modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasNoKey();
-            entity.ToTable("customer");
+            modelBuilder.Entity<Customer>(entity =>
+            {
+                entity.ToTable("customer");
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Name)
+                    .HasMaxLength(50)
+                    .HasColumnName("name");
+            });
 
-            entity.Property(e => e.CustomerName)
-                .HasMaxLength(50)
-                .HasColumnName("customername");
+            modelBuilder.Entity<GameCharge>(entity =>
+            {
+                entity.ToTable("gamecharge");
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.ChargeDate).HasColumnName("chargedate");
+                entity.Property(e => e.CustomerId).HasColumnName("customerid");
+                entity.Property(e => e.Description)
+                    .HasMaxLength(100)
+                    .HasColumnName("description");
 
-            entity.Property(e => e.CustomerId).HasColumnName("customernumber");
-        });
+                entity.Property(e => e.TotalCost).HasColumnName("totalcost");
+            });
 
-        modelBuilder.Entity<GameCharge>(entity =>
-        {
-            entity.HasNoKey();
-
-            entity.ToTable("gamecharge");
-            entity.Property(e => e.ChargeDate).HasColumnName("chargedate");
-            entity.Property(e => e.CustomerId).HasColumnName("customerid");
-            entity.Property(e => e.Description)
-                .HasMaxLength(100)
-                .HasColumnName("description");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.TotalCost).HasColumnName("totalcost");
-        });
-        // SeedDatabase(modelBuilder);
+            OnModelCreatingPartial(modelBuilder);
+        }
 
     }
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
     private static void SeedDatabase(ModelBuilder modelBuilder)
     {
@@ -92,8 +90,8 @@ public class AppDbContext : DbContext
             ChargeDate = new()
         });
 
-        modelBuilder.Entity<Customer>().HasData(new Customer { CustomerId = 1, CustomerName = "Customer 1" });
-        modelBuilder.Entity<Customer>().HasData(new Customer { CustomerId = 2, CustomerName = "Customer 2" });
+        modelBuilder.Entity<Customer>().HasData(new Customer { Id = 1, Name = "Customer 1" });
+        modelBuilder.Entity<Customer>().HasData(new Customer { Id = 2, Name = "Customer 2" });
     }
 
 }

@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ChargeNotification.Migrations
+namespace ChargeNotification.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220306113343_AddData")]
-    partial class AddData
+    [Migration("20220307162630_InitData")]
+    partial class InitData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,20 +26,33 @@ namespace ChargeNotification.Migrations
 
             modelBuilder.Entity("ChargeNotification.Models.Customer", b =>
                 {
-                    b.Property<int>("CustomerId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("customernumber");
+                        .HasColumnName("id");
 
-                    b.Property<string>("CustomerName")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasColumnName("customername");
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
 
                     b.ToTable("customer", (string)null);
                 });
 
             modelBuilder.Entity("ChargeNotification.Models.GameCharge", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
                     b.Property<DateOnly>("ChargeDate")
                         .HasColumnType("date")
                         .HasColumnName("chargedate");
@@ -53,13 +66,11 @@ namespace ChargeNotification.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("description");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
                     b.Property<int>("TotalCost")
                         .HasColumnType("integer")
                         .HasColumnName("totalcost");
+
+                    b.HasKey("Id");
 
                     b.ToTable("gamecharge", (string)null);
                 });

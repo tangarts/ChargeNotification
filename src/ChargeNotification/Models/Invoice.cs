@@ -1,6 +1,6 @@
 namespace ChargeNotification.Models;
 
-public class Notification
+public class Invoice
 {
     public int CustomerNumber { get; set; }
     public string? CustomerName { get; set; }
