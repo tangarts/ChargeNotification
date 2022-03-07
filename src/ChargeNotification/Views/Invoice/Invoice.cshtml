@@ -1,0 +1,22 @@
+@model Notification
+
+<p>Customer Number: @Model.CustomerNumber</p>
+<p>Customer Name: @Model.CustomerName</p>
+
+<h3>CHARGES</h3>
+
+<table class="table">
+    <th scope="col"><b>Date</b></th>
+    <th scope="col"><b>Game</b></th>
+    <th scope="col"><b>Cost (pence)</b></th>
+    @foreach (var charge in Model.Charges)
+    {
+        <tr>
+            <td>@charge.ChargeDate</td>
+            <td>@charge.Description</td>
+            <td>@charge.TotalCost</td>
+        </tr>
+    }
+</table>
+
+<p><b>TOTAL (Pence): @Model.TotalCost</b></p>
