@@ -1,12 +1,24 @@
 using ChargeNotification.Data;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
+bool INMEMORYDB = false;
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ApplicationDbContext>(
-    opt => opt.UseInMemoryDatabase("NotificationDB"));
+
+if (INMEMORYDB)
+{
+    builder.Services.AddDbContext<AppDbContext>(opt =>
+    opt.UseInMemoryDatabase("dbo"));
+}
+else
+{
+    builder.Services.AddDbContext<AppDbContext>(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
+
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();
 
@@ -19,6 +31,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -29,4 +42,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+RotativaConfiguration.Setup(app.Environment.WebRootPath, "Rotativa");
 app.Run();
