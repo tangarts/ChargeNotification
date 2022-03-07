@@ -5,6 +5,9 @@ using Rotativa.AspNetCore;
 
 namespace ChargeNotification.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
+
 public class InvoiceController : Controller
 {
     private readonly AppDbContext _context;
@@ -15,37 +18,54 @@ public class InvoiceController : Controller
         _logger = logger;
         _context = context;
     }
-    public IActionResult Index()
-    {
-        return View();
-    }
 
     /// <summary>
     /// View pdf generation as IActionResult
     /// </summary>
-    /// <returns></returns>
+    /// <returns>IAction result of a pdf or html rendered View</returns>
+    /// <param name="id">
+    /// The customer Id.
+    /// </param>
+    /// <param name="date">
+    /// The invoice date - defaults to today's date.
+    /// </param>
+    /// <param name="pdf">
+    /// Whether to generate pdf or not - defaults to true
+    /// </param>
     [HttpGet]
-    // [Route("{id:int}")]
-    public IActionResult Invoice(int id)
+    [Route("{id:int}")]
+    public IActionResult Invoice(int id, DateTime date = default, bool pdf = true)
     {
-        Customer? customer = this._context.Customers.FirstOrDefault(i => i.CustomerId == id);
+        DateOnly chargeDate = date != default ?
+                DateOnly.FromDateTime(date) :
+                DateOnly.FromDateTime(DateTime.Now);
+        // Customer? customer = this._context.Customers.FirstOrDefault(i => i.Id == id);
+
+        Customer? customer = this._context.Customers.Find(id);
 
         List<GameCharge>? charges = this._context.GameCharges
-                        .Where(i => i.CustomerId == id)
+                        .Where(i => i.CustomerId == id &&
+                               i.ChargeDate == chargeDate)
                         .ToList();
 
         if (customer == null || charges == null)
         {
             return NotFound();
         }
-        Notification notification = new()
+        Invoice invoice = new()
         {
-            CustomerNumber = customer.CustomerId,
-            CustomerName = customer.CustomerName,
+            CustomerNumber = customer.Id,
+            CustomerName = customer.Name,
             Charges = charges
         };
-        // return new ViewAsPdf(notification);
-        return View(notification);
-    }
+        if (pdf)
+        {
+            return new ViewAsPdf(invoice)
+            {
+                FileName = $"{invoice.CustomerName}-{chargeDate}.pdf"
+            };
+        }
+        return View(invoice);
 
+    }
 }
