@@ -9,3 +9,5 @@ To get the invoice for customer with id 5 on the 1st March 2022, displayed as a 
 ```
 GET /api/invoice/5?pdf=true&date=2022-03-01
 ```
+
+Note, the `wkhtmltopdf` is built for MacOS 10.7+.
