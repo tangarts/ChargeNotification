@@ -32,7 +32,7 @@ CREATE OR REPLACE FUNCTION createGameCharge(int) RETURNS void AS $$
  FOR counter IN 1..amt
  LOOP
  insert into gamecharge(customerid, description, totalcost, chargedate)
-  select randint(1, 100), 'Game '  || Cast(randint(1, 21) AS VARCHAR(50)), randint(1, 100), rand_day();
+  select randint(1, cnt), 'Game '  || Cast(randint(1, 21) AS VARCHAR(50)), randint(1, 100), rand_day();
  END LOOP;
  END;
  $$ LANGUAGE plpgsql;
@@ -48,3 +48,6 @@ create table gamecharge (
     description VARCHAR(100), 
     TotalCost INTEGER, 
     ChargeDate Date);
+
+select createCustomer(100);
+select createGameCharge(100);

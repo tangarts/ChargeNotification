@@ -11,3 +11,5 @@ GET /api/invoice/5?pdf=true&date=2022-03-01
 ```
 
 Note, the `wkhtmltopdf` is built for MacOS 10.7+.
+
+To initialise the database create a database called `dbo` using postgres and run the sql script using `psql -f customer.sql -d dbo`.
